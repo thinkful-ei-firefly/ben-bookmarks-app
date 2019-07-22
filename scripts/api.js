@@ -1,7 +1,7 @@
 'use strict';
 
 const api = (function() {
-  const BASE_URL = 'https://thinkful-list-api.herokuapp.com/ben/';
+  const BASE_URL = 'https://thinkful-list-api.herokuapp.com/ben';
 
   const listApiFetch = function(...args) {
     let error;
@@ -21,6 +21,8 @@ const api = (function() {
           error.message = data.message;
           return Promise.reject(error);
         }
+        console.log(data);
+        console.log(store.bookmarks);
         return data;
       });
   };
@@ -30,7 +32,7 @@ const api = (function() {
   };
 
   const createBookmark = function(obj) {
-    const newBookmark = JSON.stringify({ obj });
+    const newBookmark = JSON.stringify(obj);
     return listApiFetch(BASE_URL + '/bookmarks', {
       method: 'POST',
       headers: {

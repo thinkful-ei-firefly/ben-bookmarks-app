@@ -1,12 +1,12 @@
 'use strict';
 
-const store = (function(){
+const store = (function() {
   const setError = function(error) {
     this.error = error;
   };
 
   const addBookmark = function(bookmark) {
-    this.items.push(bookmark);
+    this.bookmarks.push(bookmark);
   };
 
   const findById = function(id) {
@@ -17,8 +17,7 @@ const store = (function(){
     this.bookmarks = this.bookmarks.filter(bookmark => bookmark.id !== id);
   };
 
-  const filterByRating = function() {
-  };
+  const filterByRating = function() {};
 
   return {
     bookmarks: [],
@@ -29,7 +28,6 @@ const store = (function(){
     addBookmark,
     findById,
     findAndDelete,
-    filterByRating,
+    filterByRating
   };
-  
-}());
+})();
