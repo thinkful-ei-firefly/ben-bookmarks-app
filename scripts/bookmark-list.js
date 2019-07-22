@@ -3,19 +3,30 @@
 /* global store */
 
 const bookmarkList = (function() {
-  function generateBookmarkElement(bookmark) {
-    const { id, title } = bookmark;
-    return `
+  function generateBookmarkElement(obj) {
+    const { id, title, url, rating, description } = obj;
+    const bookmark = store.findById(id); 
+    if (bookmark.expand) {
+      return `
       <li class="js-bookmark-element" data-bookmark-id="${id}">
         <span class="bookmark-title">${title}</span>
-          <button class="bookmark-details">
-            <span class="button-label">DETAILS</span>
-          </button>
-          <button class="bookmark-delete">
-            <span class="button-label">REMOVE</span>
-          </button>
-        </div>
+        <span class="bookmark-rating">${rating}</span>
+        <span class="bookmark-url">
+        <a href="${url}">${url}</a>
+        </span>
+        <span class="bookmark-url">${description}</span>
+        <button class="bookmark-details">DETAILS</button>
+        <button class="bookmark-delete">REMOVE</button>
       </li>`;
+    } else {
+      return `
+      <li class="js-bookmark-element" data-bookmark-id="${id}">
+        <span class="bookmark-title">${title}</span>
+        <span class="bookmark-rating">${rating}</span>
+        <button class="bookmark-details">DETAILS</button>
+        <button class="bookmark-delete">REMOVE</button>
+      </li>`;
+    }
   }
 
   function generateBookmarksString(bookmarksList) {
@@ -81,6 +92,7 @@ const bookmarkList = (function() {
         .val('');
       api.createBookmark(newBookmark).then(bookmark => {
         store.addBookmark(bookmark);
+        console.log(store.bookmarks);
         render();
       });
     });
@@ -92,7 +104,14 @@ const bookmarkList = (function() {
       .data('bookmark-id');
   }
 
-  function handleBookmarkDetailClick() {}
+  function handleBookmarkDetailClick() {
+    $('ul').on('click', '.bookmark-details', event => {
+      const id = getBookmarkIdFromElement(event.currentTarget);
+      const bookmark = store.findById(id);
+      bookmark.expand = !bookmark.expand;
+      render();
+    });
+  }
 
   function handleRemoveBookmarkClick() {
     $('ul').on('click', '.bookmark-delete', event => {
