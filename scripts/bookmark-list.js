@@ -15,7 +15,7 @@ const bookmarkList = (function() {
         <a href="${url}">${url}</a>
         </span>
         <span class="bookmark-url">${description}</span>
-        <button class="bookmark-details">DETAILS</button>
+        <button class="bookmark-toggle">COLLAPSE</button>
         <button class="bookmark-delete">REMOVE</button>
       </li>`;
     } else {
@@ -23,7 +23,7 @@ const bookmarkList = (function() {
       <li class="js-bookmark-element" data-bookmark-id="${id}">
         <span class="bookmark-title">${title}</span>
         <span class="bookmark-rating">${rating}</span>
-        <button class="bookmark-details">DETAILS</button>
+        <button class="bookmark-toggle">DETAILS</button>
         <button class="bookmark-delete">REMOVE</button>
       </li>`;
     }
@@ -38,16 +38,11 @@ const bookmarkList = (function() {
 
   function render() {
     let bookmarks = [...store.bookmarks];
-    console.log('`render` ran');
     const bookmarksString = generateBookmarksString(bookmarks);
-    $('.js-bookmark-list').html(bookmarksString);
-  }
-
-  function handleAddNewBookmarkClick() {
-    $('.js-add-new').click(() => {
-      $('.add-new').html('');
+    if (store.adding) {
+      $('.add-new').empty();
       $('form').html(`
-      <fieldset>
+        <fieldset>
           <legend>Add A New Bookmark</legend>
           <label for="title">
             Title: 
@@ -62,12 +57,25 @@ const bookmarkList = (function() {
             <input type="number" name="rating" id="rating" min="1" max="5" required>
           </label>
           <label for="description">
-          Description: 
-          <textarea name="description" id="description" required></textarea>
-        </label>
-        <button type="submit">ADD</button>
-        </fieldset>
+            Description: 
+            <textarea name="description" id="description" required></textarea>
+          </label>
+          <button type="submit">ADD</button>
+          </fieldset>
       `);
+    } else {
+      $('form').empty();
+      $('.add-new').html(`<div class="add-new">
+      <button class="add-new-button">Add New Bookmark</button>
+    </div>`);
+    }
+    $('.js-bookmark-list').html(bookmarksString);
+  }
+
+  function handleAddNewBookmarkClick() {
+    $('.add-new').on('click', '.add-new-button', () => {
+      store.adding = !store.adding;
+      render();
     });
   }
 
@@ -90,6 +98,7 @@ const bookmarkList = (function() {
       $('form')
         .find('input, textarea')
         .val('');
+      store.adding = !store.adding;
       api.createBookmark(newBookmark).then(bookmark => {
         store.addBookmark(bookmark);
         console.log(store.bookmarks);
@@ -105,7 +114,7 @@ const bookmarkList = (function() {
   }
 
   function handleBookmarkDetailClick() {
-    $('ul').on('click', '.bookmark-details', event => {
+    $('ul').on('click', '.bookmark-toggle', event => {
       const id = getBookmarkIdFromElement(event.currentTarget);
       const bookmark = store.findById(id);
       bookmark.expand = !bookmark.expand;

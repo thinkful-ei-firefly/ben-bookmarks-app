@@ -7,7 +7,7 @@ const store = (function() {
 
   const addBookmark = function(bookmark) {
     const expand = { expand: false };
-    Object.assign(bookmark, expand)
+    Object.assign(bookmark, expand);
     this.bookmarks.push(bookmark);
   };
 
