@@ -15,27 +15,22 @@
 <body>
 
   <header>
-    <h1>Bookmark App</h1>
+    <h1>My Bookmarks</h1>
   </header>
   <main>
-    <form id="js-add-bookmark">
-      <fieldset>
-        <legend>Add a Bookmark</legend>
-        <div class="form-input">
-          <label for="add-title">Title: </label>
-          <input type="text" name="add-title" id="add-title" class="js-add-title" placeholder="My Favorite Site">
-        </div>
-
-        <label for="add-url">URL: </label>
-        <input type="url" name="add-url" id="add-url" class="js-add-url" placeholder="https://www.example.com/">
-        <label for="add-description">Description: </label>
-        <input type="text" name="add-description" id="add-description" class="js-add-description"
-          placeholder="This is one of my favorite websites">
-        <label for="add-rating">Rating: </label>
-        <input type="number" name="add-rating" id="add-rating" class="js-add-rating">
-        <button type="submit">Add Item</button>
-      </fieldset>
-    </form>
+      <div class="top-buttons">
+        <label for="filter">Filter by Minimum Rating:</label>
+        <select id="filter">
+          <option value="5">5</option>
+          <option value="5">4</option>
+          <option value="5">3</option>
+          <option value="5">2</option>
+          <option value="5">1</option>
+        </select>
+      </div>
+      <div class="top-buttons">
+        <button>Add New Bookmark</button>
+      </div>
     <ul class="bookmark-list js-bookmark-list"></ul>
   </main>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css"></script>
