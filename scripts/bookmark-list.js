@@ -4,8 +4,8 @@
 
 const bookmarkList = (function() {
   function generateBookmarkElement(obj) {
-    const { id, title, url, rating, description } = obj;
-    const bookmark = store.findById(id); 
+    const { id, title, url, rating, desc } = obj;
+    const bookmark = store.findById(id);
     if (bookmark.expand) {
       return `
       <li class="js-bookmark-element" data-bookmark-id="${id}">
@@ -14,7 +14,7 @@ const bookmarkList = (function() {
         <span class="bookmark-url">
         <a href="${url}">${url}</a>
         </span>
-        <span class="bookmark-url">${description}</span>
+        <span class="bookmark-url">${desc}</span>
         <button class="bookmark-toggle">COLLAPSE</button>
         <button class="bookmark-delete">REMOVE</button>
       </li>`;
@@ -37,7 +37,7 @@ const bookmarkList = (function() {
   }
 
   function render() {
-    let bookmarks = [...store.bookmarks];
+    const bookmarks = store.filterByRating(store.filterRating);
     const bookmarksString = generateBookmarksString(bookmarks);
     if (store.adding) {
       $('.add-new').empty();
@@ -91,17 +91,16 @@ const bookmarkList = (function() {
       const rating = $(event.currentTarget)
         .find('input[id="rating"]')
         .val();
-      const description = $(event.currentTarget)
+      const desc = $(event.currentTarget)
         .find('textarea')
         .val();
-      const newBookmark = { title, url, rating, description };
+      const newBookmark = { title, url, rating, desc };
       $('form')
         .find('input, textarea')
         .val('');
       store.adding = !store.adding;
       api.createBookmark(newBookmark).then(bookmark => {
         store.addBookmark(bookmark);
-        console.log(store.bookmarks);
         render();
       });
     });
@@ -132,7 +131,13 @@ const bookmarkList = (function() {
     });
   }
 
-  function handleFilterByRating() {}
+  function handleFilterByRating() {
+    $('#filter').change(() => {
+      const rating = $(event.currentTarget).val();
+      store.filterRating = rating;
+      render();
+    });
+  }
 
   function bindEventListeners() {
     handleAddNewBookmarkClick();
@@ -142,7 +147,6 @@ const bookmarkList = (function() {
     handleFilterByRating();
   }
 
-  // This object contains the only exposed methods from this module:
   return {
     render,
     bindEventListeners

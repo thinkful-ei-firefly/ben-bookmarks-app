@@ -16,15 +16,20 @@ const store = (function() {
   };
 
   const findAndDelete = function(id) {
-    this.bookmarks = this.bookmarks.filter(bookmark => bookmark.id !== id);
+    return (this.bookmarks = this.bookmarks.filter(
+      bookmark => bookmark.id !== id
+    ));
   };
 
-  const filterByRating = function() {};
+  const filterByRating = function(rating) {
+    return this.bookmarks.filter(bookmark => bookmark.rating >= rating);
+  };
 
   return {
     bookmarks: [],
     adding: false,
     showError: false,
+    filterRating: 1,
 
     setError,
     addBookmark,
