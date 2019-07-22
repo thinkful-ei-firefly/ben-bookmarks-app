@@ -6,8 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Bookmark App</title>
-  <!-- normalize: which version to use? -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel=stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" rel=stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
   <link href="styles/index.css" rel="stylesheet">
   <title>Document</title>
@@ -22,20 +21,24 @@
     <form id="js-add-bookmark">
       <fieldset>
         <legend>Add a Bookmark</legend>
+        <div class="form-input">
           <label for="add-title">Title: </label>
           <input type="text" name="add-title" id="add-title" class="js-add-title" placeholder="My Favorite Site">
-          <label for="add-url">URL: </label>
-          <input type="url" name="add-url" id="add-url" class="js-add-url" placeholder="https://www.example.com/">
-          <label for="add-description">Description: </label>
-          <input type="text" name="add-description" id="add-description" class="js-add-description" placeholder="This is one of my favorite websites">
-          <label for="add-rating">Rating: </label>
-          <input type="number" name="add-rating" id="add-rating" class="js-add-rating">
-          <button type="submit">Add Item</button>
+        </div>
+
+        <label for="add-url">URL: </label>
+        <input type="url" name="add-url" id="add-url" class="js-add-url" placeholder="https://www.example.com/">
+        <label for="add-description">Description: </label>
+        <input type="text" name="add-description" id="add-description" class="js-add-description"
+          placeholder="This is one of my favorite websites">
+        <label for="add-rating">Rating: </label>
+        <input type="number" name="add-rating" id="add-rating" class="js-add-rating">
+        <button type="submit">Add Item</button>
       </fieldset>
     </form>
     <ul class="bookmark-list js-bookmark-list"></ul>
   </main>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cuid/1.3.8/browser-cuid.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cuid/1.3.8/browser-cuid.min.js"></script>
   <script type="text/javascript" src="scripts/store.js"></script>
   <script type="text/javascript" src="scripts/api.js"></script>
