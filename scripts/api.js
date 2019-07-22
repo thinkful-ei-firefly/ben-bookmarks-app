@@ -21,8 +21,6 @@ const api = (function() {
           error.message = data.message;
           return Promise.reject(error);
         }
-        console.log(data);
-        console.log(store.bookmarks);
         return data;
       });
   };

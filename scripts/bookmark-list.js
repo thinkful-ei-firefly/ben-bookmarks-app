@@ -8,10 +8,10 @@ const bookmarkList = (function() {
     return `
       <li class="js-bookmark-element" data-bookmark-id="${id}">
         <span class="bookmark-title">${title}</span>
-          <button class="bookmark-details js-bookmark-details">
+          <button class="bookmark-details">
             <span class="button-label">DETAILS</span>
           </button>
-          <button class="bookmark-delete js-bookmark-delete">
+          <button class="bookmark-delete">
             <span class="button-label">REMOVE</span>
           </button>
         </div>
@@ -76,20 +76,33 @@ const bookmarkList = (function() {
         .find('textarea')
         .val();
       const newBookmark = { title, url, rating, description };
-      console.log(newBookmark);
-      api.createBookmark(newBookmark)
-        .then(bookmark => {
-          store.addBookmark(bookmark);
-          render();
-        });
+      $('form')
+        .find('input, textarea')
+        .val('');
+      api.createBookmark(newBookmark).then(bookmark => {
+        store.addBookmark(bookmark);
+        render();
+      });
     });
   }
 
-  function getBookmarkIdFromElement(bookmark) {}
+  function getBookmarkIdFromElement(element) {
+    return $(element)
+      .closest('li')
+      .data('bookmark-id');
+  }
 
   function handleBookmarkDetailClick() {}
 
-  function handleRemoveBookmarkClick() {}
+  function handleRemoveBookmarkClick() {
+    $('ul').on('click', '.bookmark-delete', event => {
+      const id = getBookmarkIdFromElement(event.currentTarget);
+      api.deleteBookmark(id).then(() => {
+        store.findAndDelete(id);
+        render();
+      });
+    });
+  }
 
   function handleFilterByRating() {}
 
