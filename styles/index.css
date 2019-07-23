@@ -16,7 +16,15 @@ header {
   margin-bottom: 40px;
 }
 
-header, .filter, .add-new, .form-buttons, .li-buttons {
+h1 {
+  font-size: 36px;
+}
+
+header,
+.filter,
+.add-new,
+.form-buttons,
+.li-buttons {
   text-align: center;
 }
 
@@ -25,14 +33,15 @@ header, .filter, .add-new, .form-buttons, .li-buttons {
   margin-bottom: 10px;
 }
 
-.filter, .add-new {
+.filter,
+.add-new {
   margin-bottom: 40px;
 }
-
 
 button {
   padding: 10px;
   border-radius: 5px;
+  background-color: lightsteelblue;
 }
 
 .form-div {
@@ -75,7 +84,8 @@ li {
   border-radius: 5px;
 }
 
-form button, li button {
+form button,
+li button {
   margin-top: 20px;
 }
 

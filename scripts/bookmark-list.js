@@ -208,13 +208,11 @@ const bookmarkList = (function() {
       const id = getBookmarkIdFromElement(event.currentTarget);
       const bookmark = serializeForm(event.currentTarget);
       const bookmarkJson = serializeJson(event.currentTarget);
-      api
-        .updateBookmark(id, bookmarkJson)
-        .then(() => {
-          store.findAndUpdate(id, bookmark);
-          store.setBookmarkIsEditing(id, false);
-          render();
-        });
+      api.updateBookmark(id, bookmarkJson).then(() => {
+        store.findAndUpdate(id, bookmark);
+        store.setBookmarkIsEditing(id, false);
+        render();
+      });
     });
   }
 
