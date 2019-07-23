@@ -38,7 +38,7 @@ const store = (function() {
   return {
     bookmarks: [],
     adding: false,
-    showError: false,
+    error: null,
     filterRating: 1,
 
     setError,

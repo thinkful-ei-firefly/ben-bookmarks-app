@@ -3,6 +3,15 @@
 /* global store, api */
 
 const bookmarkList = (function() {
+  function generateError(message) {
+    return `
+      <section class="error-content">
+        <button id="cancel-error">X</button>
+        <p>${message}</p>
+      </section>
+    `;
+  }
+
   function generateBookmarkElement(obj) {
     const { id, title, url, rating, desc } = obj;
     const bookmark = store.findById(id);
@@ -74,7 +83,17 @@ const bookmarkList = (function() {
     return bookmarks.join('');
   }
 
+  function renderError() {
+    if (store.error) {
+      const errorHtml = generateError(store.error);
+      $('.error-container').html(errorHtml);
+    } else {
+      $('.error-container').empty();
+    }
+  }
+
   function render() {
+    renderError();
     const bookmarks = store.filterByRating(store.filterRating);
     const bookmarksString = generateBookmarksString(bookmarks);
     if (store.adding) {
@@ -154,10 +173,17 @@ const bookmarkList = (function() {
       event.preventDefault();
       const newBookmark = serializeJson(event.currentTarget);
       store.adding = false;
-      api.createBookmark(newBookmark).then(bookmark => {
-        store.addBookmark(bookmark);
-        render();
-      });
+      api
+        .createBookmark(newBookmark)
+        .then(bookmark => {
+          store.addBookmark(bookmark);
+          render();
+        })
+        .catch(err => {
+          console.log(err);
+          store.setError(err.message);
+          renderError();
+        });
     });
   }
 
@@ -179,10 +205,17 @@ const bookmarkList = (function() {
   function handleRemoveBookmarkClick() {
     $('ul').on('click', '.bookmark-delete', event => {
       const id = getBookmarkIdFromElement(event.currentTarget);
-      api.deleteBookmark(id).then(() => {
-        store.findAndDelete(id);
-        render();
-      });
+      api
+        .deleteBookmark(id)
+        .then(() => {
+          store.findAndDelete(id);
+          render();
+        })
+        .catch(err => {
+          console.log(err);
+          store.setError(err.message);
+          renderError();
+        });
     });
   }
 
@@ -208,11 +241,25 @@ const bookmarkList = (function() {
       const id = getBookmarkIdFromElement(event.currentTarget);
       const bookmark = serializeForm(event.currentTarget);
       const bookmarkJson = serializeJson(event.currentTarget);
-      api.updateBookmark(id, bookmarkJson).then(() => {
-        store.findAndUpdate(id, bookmark);
-        store.setBookmarkIsEditing(id, false);
-        render();
-      });
+      api
+        .updateBookmark(id, bookmarkJson)
+        .then(() => {
+          store.findAndUpdate(id, bookmark);
+          store.setBookmarkIsEditing(id, false);
+          render();
+        })
+        .catch(err => {
+          console.log(err);
+          store.setError(err.message);
+          renderError();
+        });
+    });
+  }
+
+  function handleCloseError() {
+    $('.error-container').on('click', '#cancel-error', () => {
+      store.setError(null);
+      renderError();
     });
   }
 
@@ -226,6 +273,7 @@ const bookmarkList = (function() {
     handleEditBookmarkSubmit();
     handleCancelNewClick();
     handleCancelEditClick();
+    handleCloseError();
   }
 
   return {
