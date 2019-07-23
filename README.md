@@ -5,16 +5,16 @@ This is a simple web app for managing bookmarks.
 A user can:
 * Add bookmarks to their bookmark list. Bookmarks contain:
 
-  * title
-  * url link
-  * description
-  * rating (1-5)
+  * Title
+  * Url link
+  * Description
+  * Rating (1-5)
 
 * See a list of their bookmarks when they first open the app
-  * All bookmarks in the list default to a "condensed" view showing only title and rating
+  * All bookmarks in the list default to a "collapsed" view showing only title and rating
 
-* Click on a bookmark to display the "detailed" view
-  * Detailed view expands to additionally display description and a "Visit Site" link
+* Click on a bookmark to display the "expanded" view
+  * Expanded view additionally displays the description and a link to the url
 
 * Remove bookmarks from their bookmark list
 
