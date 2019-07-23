@@ -6,9 +6,11 @@
 
 body {
   font-family: 'Roboto', sans-serif;
-  width: 320px;
+  min-width: 320px;
+  max-width: 640px;
   margin: 0 auto;
   font-size: 14px;
+  background-color: lightsteelblue;
 }
 
 header {
@@ -41,11 +43,14 @@ header,
 button {
   padding: 10px;
   border-radius: 5px;
-  background-color: lightsteelblue;
 }
 
 .form-div {
   margin-bottom: 40px;
+}
+
+.padding {
+  padding: 20px;
 }
 
 .add-form label {
@@ -80,8 +85,12 @@ ul {
 li {
   margin: 20px;
   padding: 20px;
-  border: 1px solid gray;
   border-radius: 5px;
+}
+
+form,
+li {
+  background-color: white;
 }
 
 form button,
@@ -92,11 +101,12 @@ li button {
 .li-flex {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .bookmark-title {
   font-weight: bold;
-  font-size: 18px;
+  font-size: 24px;
 }
 
 .bookmark-url {
@@ -107,4 +117,29 @@ li button {
 
 .bookmark-desc {
   display: block;
+}
+
+.add-new-button,
+.add-submit,
+.update-button {
+  color: white;
+  background-color: green;
+}
+
+.bookmark-delete {
+  color: white;
+  background-color: darkred;
+}
+
+.bookmark-edit {
+  background-color: gold;
+}
+
+.bookmark-rating {
+  color: black;
+  background-color: lightgreen;
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 18px;
 }

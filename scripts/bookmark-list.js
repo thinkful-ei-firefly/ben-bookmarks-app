@@ -36,7 +36,7 @@ const bookmarkList = (function() {
           <label for="description">Description: </label>
           <textarea name="desc" id="description" rows="6" cols="28" required>${desc}</textarea>
           <div class="form-buttons">
-            <button type="submit">UPDATE</button>
+            <button class="update-button" type="submit">UPDATE</button>
             <button type="button" class="cancel">CANCEL</button>
           </div>
          </fieldset>
@@ -116,11 +116,12 @@ const bookmarkList = (function() {
           <label for="description">Description: </label>
           <textarea name="desc" id="description" rows="6" cols="34" required></textarea>
           <div class="form-buttons">
-            <button type="submit">ADD</button>
+            <button class="add-submit" type="submit">ADD</button>
             <button type="button" class="cancel">CANCEL</button>
           </div>
         </fieldset>
       `);
+      $('.add-form').toggleClass('padding');
     } else {
       $('.add-form').empty();
       $('.add-new').html(`<div class="add-new">
@@ -139,6 +140,7 @@ const bookmarkList = (function() {
 
   function handleCancelNewClick() {
     $('.add-form').on('click', '.cancel', () => {
+      $('.add-form').toggleClass('padding');
       store.adding = false;
       render();
     });
@@ -171,6 +173,7 @@ const bookmarkList = (function() {
   function handleNewBookmarkSubmit() {
     $('.add-form').submit(event => {
       event.preventDefault();
+      $('.add-form').toggleClass('padding');
       const newBookmark = serializeJson(event.currentTarget);
       store.adding = false;
       api
