@@ -29,15 +29,23 @@ const api = (function() {
     return listApiFetch(BASE_URL + '/bookmarks');
   };
 
-  const createBookmark = function(obj) {
-    const newBookmark = JSON.stringify(obj);
-    console.log(newBookmark);
+  const createBookmark = function(newBookmark) {
     return listApiFetch(BASE_URL + '/bookmarks', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: newBookmark
+    });
+  };
+
+  const updateBookmark = function(id, updateData) {
+    return listApiFetch(BASE_URL + '/bookmarks/' + id, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: updateData
     });
   };
 
@@ -50,6 +58,7 @@ const api = (function() {
   return {
     getBookmarks,
     createBookmark,
+    updateBookmark,
     deleteBookmark
   };
 })();

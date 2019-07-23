@@ -1,21 +1,50 @@
 'use strict';
 
-/* global store */
+/* global store, api */
 
 const bookmarkList = (function() {
   function generateBookmarkElement(obj) {
     const { id, title, url, rating, desc } = obj;
     const bookmark = store.findById(id);
-    if (bookmark.expand) {
+    if (bookmark.isEditing) {
+      return `
+      <li class="js-bookmark-element" data-bookmark-id="${id}">
+      <form class="edit">  
+      <fieldset>
+          <legend>EDIT BOOKMARK</legend>
+          <label for="title">
+            Title: 
+            <input type="text" name="title" id="title" value="${title}" required>
+            </label>
+          <label for="url">
+            URL: 
+            <input type="url" name="url" id="url" value="${url}" required>
+          </label>
+          <label for="rating">
+            Rating: 
+            <input type="number" name="rating" id="rating" min="1" max="5" value="${rating}" required>
+          </label>
+          <label for="description">
+            Description: 
+            <textarea name="desc" id="description" required>${desc}</textarea>
+          </label>
+          <button type="submit" class="update">UPDATE</button>
+          <button type="button" class="cancel">CANCEL</button>
+          </fieldset>
+        </form>
+      </li>
+      `;
+    } else if (bookmark.expand) {
       return `
       <li class="js-bookmark-element" data-bookmark-id="${id}">
         <span class="bookmark-title">${title}</span>
         <span class="bookmark-rating">${rating}</span>
         <span class="bookmark-url">
-        <a href="${url}">${url}</a>
+          <a href="${url}">Visit Link</a>
         </span>
         <span class="bookmark-url">${desc}</span>
         <button class="bookmark-toggle">COLLAPSE</button>
+        <button class="bookmark-edit">EDIT</button>
         <button class="bookmark-delete">REMOVE</button>
       </li>`;
     } else {
@@ -24,6 +53,7 @@ const bookmarkList = (function() {
         <span class="bookmark-title">${title}</span>
         <span class="bookmark-rating">${rating}</span>
         <button class="bookmark-toggle">DETAILS</button>
+        <button class="bookmark-edit">EDIT</button>
         <button class="bookmark-delete">REMOVE</button>
       </li>`;
     }
@@ -37,13 +67,14 @@ const bookmarkList = (function() {
   }
 
   function render() {
+    console.log('render ran');
     const bookmarks = store.filterByRating(store.filterRating);
     const bookmarksString = generateBookmarksString(bookmarks);
     if (store.adding) {
       $('.add-new').empty();
-      $('form').html(`
+      $('.add-form').html(`
         <fieldset>
-          <legend>Add A New Bookmark</legend>
+          <legend>ADD A NEW BOOKMARK</legend>
           <label for="title">
             Title: 
             <input type="text" name="title" id="title" required>
@@ -58,17 +89,19 @@ const bookmarkList = (function() {
           </label>
           <label for="description">
             Description: 
-            <textarea name="description" id="description" required></textarea>
+            <textarea name="desc" id="description" required></textarea>
           </label>
           <button type="submit">ADD</button>
+          <button type="button" class="cancel">CANCEL</button>
           </fieldset>
       `);
     } else {
-      $('form').empty();
+      $('.add-form').empty();
       $('.add-new').html(`<div class="add-new">
-      <button class="add-new-button">Add New Bookmark</button>
+      <button class="add-new-button">ADD A BOOKMARK</button>
     </div>`);
     }
+    console.log(bookmarksString);
     $('.js-bookmark-list').html(bookmarksString);
   }
 
@@ -79,25 +112,32 @@ const bookmarkList = (function() {
     });
   }
 
+  function handleCancelNewClick() {
+    $('.add-form').on('click', '.cancel', () => {
+      store.adding = !store.adding;
+      render();
+    });
+  }
+
+  function handleCancelEditClick() {
+    $('ul').on('click', '.cancel', () => {
+      const id = getBookmarkIdFromElement(event.target);
+      store.setBookmarkIsEditing(id, false);
+      render();
+    });
+  }
+
+  function serializeJson(form) {
+    const formData = new FormData(form);
+    const o = {};
+    formData.forEach((val, name) => (o[name] = val));
+    return JSON.stringify(o);
+  }
+
   function handleNewBookmarkSubmit() {
-    $('form').submit(event => {
+    $('.add-form').submit(event => {
       event.preventDefault();
-      const title = $(event.currentTarget)
-        .find('input[id="title"]')
-        .val();
-      const url = $(event.currentTarget)
-        .find('input[id="url"]')
-        .val();
-      const rating = $(event.currentTarget)
-        .find('input[id="rating"]')
-        .val();
-      const desc = $(event.currentTarget)
-        .find('textarea')
-        .val();
-      const newBookmark = { title, url, rating, desc };
-      $('form')
-        .find('input, textarea')
-        .val('');
+      const newBookmark = serializeJson(event.currentTarget);
       store.adding = !store.adding;
       api.createBookmark(newBookmark).then(bookmark => {
         store.addBookmark(bookmark);
@@ -139,12 +179,51 @@ const bookmarkList = (function() {
     });
   }
 
+  function handleBookmarkStartEditing() {
+    $('ul').on('click', '.bookmark-edit', event => {
+      const id = getBookmarkIdFromElement(event.target);
+      store.setBookmarkIsEditing(id, true);
+      render();
+    });
+  }
+
+  function handleEditBookmarkSubmit() {
+    $('ul').on('submit', '.edit', event => {
+      event.preventDefault();
+      const id = getBookmarkIdFromElement(event.currentTarget);
+      const bookmark = serializeJson(event.currentTarget);
+      api
+        .updateBookmark(id, bookmark)
+        .then(() => {
+          store.findAndUpdate(id, bookmark);
+          store.setBookmarkIsEditing(id, false);
+          render();
+        });
+    });
+  }
+
+  // function handleNewBookmarkSubmit() {
+  //   $('.add-form').submit(event => {
+  //     event.preventDefault();
+  //     const newBookmark = serializeJson(event.currentTarget);
+  //     store.adding = !store.adding;
+  //     api.createBookmark(newBookmark).then(bookmark => {
+  //       store.addBookmark(bookmark);
+  //       render();
+  //     });
+  //   });
+  // }
+
   function bindEventListeners() {
     handleAddNewBookmarkClick();
     handleNewBookmarkSubmit();
     handleBookmarkDetailClick();
     handleRemoveBookmarkClick();
     handleFilterByRating();
+    handleBookmarkStartEditing();
+    handleEditBookmarkSubmit();
+    handleCancelNewClick();
+    handleCancelEditClick();
   }
 
   return {

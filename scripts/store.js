@@ -21,8 +21,18 @@ const store = (function() {
     ));
   };
 
+  const findAndUpdate = function(id, newData) {
+    const bookmark = this.findById(id);
+    Object.assign(bookmark, newData);
+  };
+
   const filterByRating = function(rating) {
     return this.bookmarks.filter(bookmark => bookmark.rating >= rating);
+  };
+
+  const setBookmarkIsEditing = function(id, isEditing) {
+    const item = this.findById(id);
+    item.isEditing = isEditing;
   };
 
   return {
@@ -35,6 +45,8 @@ const store = (function() {
     addBookmark,
     findById,
     findAndDelete,
-    filterByRating
+    findAndUpdate,
+    filterByRating,
+    setBookmarkIsEditing
   };
 })();
