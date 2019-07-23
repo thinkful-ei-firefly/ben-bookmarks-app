@@ -45,6 +45,10 @@ button {
   border-radius: 5px;
 }
 
+button:hover {
+  cursor: pointer;
+}
+
 .form-div {
   margin-bottom: 40px;
 }
