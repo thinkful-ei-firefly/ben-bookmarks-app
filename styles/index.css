@@ -1,48 +1,67 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 body {
   font-family: 'Roboto', sans-serif;
   width: 320px;
   margin: 0 auto;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 header {
-  margin: 10px;
-  padding-top: 10px;
-  padding-bottom: 5px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+header, .filter, .add-new, .form-buttons, .li-buttons {
+  text-align: center;
+}
+
+.filter label {
+  display: block;
+  margin-bottom: 10px;
 }
 
 .filter, .add-new {
-  margin: 10px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  margin-bottom: 40px;
 }
 
-form label {
-  display: block;
-  margin: 10px;
+
+button {
   padding: 10px;
+  border-radius: 5px;
 }
 
-legend, input, textarea {
+.form-div {
+  margin-bottom: 40px;
+}
+
+.add-form label {
+  display: block;
+  margin: 20px;
+}
+
+.form-buttons {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.edit label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+input {
   margin-left: 10px;
 }
 
-.add-new-button {
-  padding: 10px;
-}
-
-form button {
-  padding: 10px;
+textarea {
   display: block;
-  margin-top: 10px;
-  margin-bottom: 20px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
 }
 
 ul {
@@ -50,17 +69,32 @@ ul {
 }
 
 li {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin: 20px;
   padding: 20px;
   border: 1px solid gray;
+  border-radius: 5px;
 }
 
-li span {
+form button, li button {
+  margin-top: 20px;
+}
+
+.li-flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+.bookmark-title {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.bookmark-url {
   display: block;
-  margin-bottom: 10px;
+  text-align: center;
+  margin: 20px;
 }
 
-li button {
-  padding: 10px;
+.bookmark-desc {
+  display: block;
 }

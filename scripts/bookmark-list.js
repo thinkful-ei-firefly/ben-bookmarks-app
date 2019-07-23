@@ -9,13 +9,13 @@ const bookmarkList = (function() {
     if (bookmark.isEditing) {
       return `
       <li class="js-bookmark-element" data-bookmark-id="${id}">
-      <form class="edit">  
-      <fieldset>
+        <form class="edit">  
+         <fieldset>
           <legend>EDIT BOOKMARK</legend>
           <label for="title">
             Title: 
             <input type="text" name="title" id="title" value="${title}" required>
-            </label>
+          </label>
           <label for="url">
             URL: 
             <input type="url" name="url" id="url" value="${url}" required>
@@ -24,37 +24,45 @@ const bookmarkList = (function() {
             Rating: 
             <input type="number" name="rating" id="rating" min="1" max="5" value="${rating}" required>
           </label>
-          <label for="description">
-            Description: 
-            <textarea name="desc" id="description" required>${desc}</textarea>
-          </label>
-          <button type="submit" class="update">UPDATE</button>
-          <button type="button" class="cancel">CANCEL</button>
-          </fieldset>
-        </form>
+          <label for="description">Description: </label>
+          <textarea name="desc" id="description" rows="6" cols="28" required>${desc}</textarea>
+          <div class="form-buttons">
+            <button type="submit">UPDATE</button>
+            <button type="button" class="cancel">CANCEL</button>
+          </div>
+         </fieldset>
+       </form>
       </li>
       `;
     } else if (bookmark.expand) {
       return `
       <li class="js-bookmark-element" data-bookmark-id="${id}">
-        <span class="bookmark-title">${title}</span>
-        <span class="bookmark-rating">${rating}</span>
-        <span class="bookmark-url">
-          <a href="${url}">Visit Link</a>
-        </span>
-        <span class="bookmark-url">${desc}</span>
-        <button class="bookmark-toggle">COLLAPSE</button>
-        <button class="bookmark-edit">EDIT</button>
-        <button class="bookmark-delete">REMOVE</button>
+        <div class="li-flex">
+          <span class="bookmark-title">${title}</span>
+          <span class="bookmark-rating">${rating}</span>
+          </div>
+          <span class="bookmark-url">
+            <a href="${url}">${url}</a>
+          </span>
+          <span class="bookmark-desc">${desc}</span>
+        <div class="li-buttons">
+          <button class="bookmark-toggle">COLLAPSE</button>
+          <button class="bookmark-edit">EDIT</button>
+          <button class="bookmark-delete">REMOVE</button>
+        </div>
       </li>`;
     } else {
       return `
       <li class="js-bookmark-element" data-bookmark-id="${id}">
-        <span class="bookmark-title">${title}</span>
-        <span class="bookmark-rating">${rating}</span>
-        <button class="bookmark-toggle">DETAILS</button>
-        <button class="bookmark-edit">EDIT</button>
-        <button class="bookmark-delete">REMOVE</button>
+        <div class="li-flex">
+          <span class="bookmark-title">${title}</span>
+          <span class="bookmark-rating">${rating}</span>
+        </div>
+        <div class="li-buttons">
+          <button class="bookmark-toggle">EXPAND</button>
+          <button class="bookmark-edit">EDIT</button>
+          <button class="bookmark-delete">REMOVE</button>
+        </div>
       </li>`;
     }
   }
@@ -67,7 +75,6 @@ const bookmarkList = (function() {
   }
 
   function render() {
-    console.log('render ran');
     const bookmarks = store.filterByRating(store.filterRating);
     const bookmarksString = generateBookmarksString(bookmarks);
     if (store.adding) {
@@ -78,7 +85,7 @@ const bookmarkList = (function() {
           <label for="title">
             Title: 
             <input type="text" name="title" id="title" required>
-            </label>
+          </label>
           <label for="url">
             URL: 
             <input type="url" name="url" id="url" required>
@@ -87,13 +94,13 @@ const bookmarkList = (function() {
             Rating: 
             <input type="number" name="rating" id="rating" min="1" max="5" required>
           </label>
-          <label for="description">
-            Description: 
-            <textarea name="desc" id="description" required></textarea>
-          </label>
-          <button type="submit">ADD</button>
-          <button type="button" class="cancel">CANCEL</button>
-          </fieldset>
+          <label for="description">Description: </label>
+          <textarea name="desc" id="description" rows="6" cols="34" required></textarea>
+          <div class="form-buttons">
+            <button type="submit">ADD</button>
+            <button type="button" class="cancel">CANCEL</button>
+          </div>
+        </fieldset>
       `);
     } else {
       $('.add-form').empty();
@@ -101,20 +108,19 @@ const bookmarkList = (function() {
       <button class="add-new-button">ADD A BOOKMARK</button>
     </div>`);
     }
-    console.log(bookmarksString);
     $('.js-bookmark-list').html(bookmarksString);
   }
 
   function handleAddNewBookmarkClick() {
     $('.add-new').on('click', '.add-new-button', () => {
-      store.adding = !store.adding;
+      store.adding = true;
       render();
     });
   }
 
   function handleCancelNewClick() {
     $('.add-form').on('click', '.cancel', () => {
-      store.adding = !store.adding;
+      store.adding = false;
       render();
     });
   }
@@ -134,11 +140,20 @@ const bookmarkList = (function() {
     return JSON.stringify(o);
   }
 
+  function serializeForm(form) {
+    const formData = new FormData(form);
+    let obj = {};
+    for (let [key, value] of formData.entries()) {
+      obj[key] = value;
+    }
+    return obj;
+  }
+
   function handleNewBookmarkSubmit() {
     $('.add-form').submit(event => {
       event.preventDefault();
       const newBookmark = serializeJson(event.currentTarget);
-      store.adding = !store.adding;
+      store.adding = false;
       api.createBookmark(newBookmark).then(bookmark => {
         store.addBookmark(bookmark);
         render();
@@ -191,9 +206,10 @@ const bookmarkList = (function() {
     $('ul').on('submit', '.edit', event => {
       event.preventDefault();
       const id = getBookmarkIdFromElement(event.currentTarget);
-      const bookmark = serializeJson(event.currentTarget);
+      const bookmark = serializeForm(event.currentTarget);
+      const bookmarkJson = serializeJson(event.currentTarget);
       api
-        .updateBookmark(id, bookmark)
+        .updateBookmark(id, bookmarkJson)
         .then(() => {
           store.findAndUpdate(id, bookmark);
           store.setBookmarkIsEditing(id, false);
@@ -201,18 +217,6 @@ const bookmarkList = (function() {
         });
     });
   }
-
-  // function handleNewBookmarkSubmit() {
-  //   $('.add-form').submit(event => {
-  //     event.preventDefault();
-  //     const newBookmark = serializeJson(event.currentTarget);
-  //     store.adding = !store.adding;
-  //     api.createBookmark(newBookmark).then(bookmark => {
-  //       store.addBookmark(bookmark);
-  //       render();
-  //     });
-  //   });
-  // }
 
   function bindEventListeners() {
     handleAddNewBookmarkClick();
