@@ -51,7 +51,7 @@ const bookmarkList = (function() {
           <span class="bookmark-rating">${rating}</span>
           </div>
           <span class="bookmark-url">
-            <a href="${url}">${url}</a>
+            <a href="${url}" target="_blank">${url}</a>
           </span>
           <span class="bookmark-desc">${desc}</span>
         <div class="li-buttons">
